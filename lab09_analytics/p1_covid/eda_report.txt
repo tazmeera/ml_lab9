@@ -1,0 +1,60 @@
+======================================================================
+1. EXPLORATORY DATA ANALYSIS
+======================================================================
+Shape: 20,720 rows x 13 columns
+Period: 2020-03-01 -> 2022-12-31 | Countries: 20
+
+Data types:
+date                       datetime64[us]
+country                               str
+continent                             str
+population                          int64
+new_cases                         float64
+new_deaths                        float64
+new_recoveries                    float64
+total_cases                         int64
+total_deaths                        int64
+total_recoveries                  float64
+people_vaccinated                 float64
+people_fully_vaccinated           float64
+total_vaccinations                float64
+
+Summary statistics:
+                           count                 mean                  min                  25%                  50%                  75%                  max               std
+date                       20720  2021-07-31 12:00:00  2020-03-01 00:00:00  2020-11-14 18:00:00  2021-07-31 12:00:00  2022-04-16 06:00:00  2022-12-31 00:00:00               NaN
+population               20720.0          178150000.0           26000000.0           57250000.0           84000000.0          162250000.0         1400000000.0  291872813.009175
+new_cases                20306.0         41085.849946               -499.0               5253.0              14480.5              34413.0            1281654.0        95338.0943
+new_deaths               20099.0           361.465745                  0.0                 46.0                128.0                331.0               8976.0        822.882923
+new_recoveries           19160.0         40145.706159                  0.0               5060.5              13885.0             33391.75            1243930.0      93520.073368
+total_cases              20720.0       19127578.40806                 31.0           2131462.75            7010654.5          17220344.75          316879995.0   41350915.178459
+total_deaths             20720.0        197632.115637                  0.0             29724.75              75222.0             182484.5            2974446.0     411781.594842
+total_recoveries         19368.0      17881351.700072                  0.0           1851353.25            6520069.5           15264643.5          307268771.0   39557423.643147
+people_vaccinated        19892.0      62705535.913684                  0.0                  0.0           21755755.5          55732817.75         1133448610.0  165221954.398848
+people_fully_vaccinated  19684.0      51523671.720636                  0.0                  0.0           14494025.0          45066391.25         1019696133.0   141645893.00175
+total_vaccinations       19892.0     118032415.097879                  0.0                  0.0           36751064.0         101752459.25         2309426196.0  319659736.131808
+
+Missing values BEFORE cleaning:
+                         missing   pct
+new_cases                    414  2.00
+new_deaths                   621  3.00
+new_recoveries              1560  7.53
+total_recoveries            1352  6.53
+people_vaccinated            828  4.00
+people_fully_vaccinated     1036  5.00
+total_vaccinations           828  4.00
+
+Negative new_cases (data corrections): 15
+Duplicate (country,date) rows: 0
+
+======================================================================
+2. DATA CLEANING DECISIONS
+======================================================================
+- Negative daily values set to NaN: 15 new_cases rows
+- Daily counts (new_*): linear interpolation within each country; leftover gaps = 0
+- Cumulative columns: forward-fill within country (values cannot fall); 0 before first report
+- UK stopped reporting recoveries in Feb-2022 -> carried forward (recovery totals for UK are a LOWER BOUND)
+
+Missing values AFTER cleaning: 0
+
+Saved 10 static charts in /home/claude/labs/lab09_analytics/p1_covid/charts
+Saved interactive dashboard -> covid_dashboard.html

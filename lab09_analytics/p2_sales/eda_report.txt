@@ -1,0 +1,69 @@
+======================================================================
+1. EXPLORATORY DATA ANALYSIS
+======================================================================
+Shape: 9,040 rows x 15 columns
+Period: 01 Jan 2023 -> 30 Sep 2026
+Customers: 679 | Products: 36 | States: 19
+
+Data types:
+Order ID                    str
+Order Date       datetime64[us]
+Ship Date        datetime64[us]
+Customer ID                 str
+Customer Name               str
+Segment                     str
+Region                      str
+State                       str
+Category                    str
+Sub-Category                str
+Product Name                str
+Sales                   float64
+Quantity                float64
+Discount                float64
+Profit                  float64
+
+Numeric summary:
+           count      mean       std       min      25%      50%       75%        max
+Sales     9040.0  28542.40  49049.76    126.05  1555.79  7147.06  33431.64  378448.95
+Quantity  8968.0      3.93      2.29      1.00     2.00     4.00      5.00      12.00
+Discount  8860.0      0.11      0.12      0.00     0.00     0.10      0.20       0.50
+Profit    8905.0    984.58   7412.88 -50762.64   -41.57   380.97   1438.17   80879.53
+
+Missing values BEFORE cleaning:
+           missing   pct
+Ship Date      182  2.01
+Segment        108  1.19
+Region          90  1.00
+Quantity        72  0.80
+Discount       180  1.99
+Profit         135  1.49
+
+Exact duplicate rows: 40
+
+Sales skew: mean 28542 vs median 7147 (right-skewed -> a few big orders dominate)
+
+======================================================================
+2. DATA CLEANING DECISIONS
+======================================================================
+- Dropped 40 exact duplicate rows -> 9,000 rows
+- Segment: 108 missing -> recovered from the same customer's other orders (rest = 'Unknown')
+- Region: 90 missing -> recovered from State lookup
+- Quantity: 72 missing -> most common value (mode) of the product Sub-Category
+- Discount: 180 missing -> most common value (mode) of the product Sub-Category
+- Ship Date: 180 missing -> Order Date + median delay (4 days)
+- Profit: 135 missing -> Sales x median margin of (Sub-Category, Discount); flagged in 'Profit_Imputed'
+
+Missing values AFTER cleaning: 0
+
+NOTE: 2026 is a partial year (to 30 Sep); year-on-year comparisons use the same Jan-Sep window.
+
+RFM segments:
+                   Customers  Avg_Recency_days  Avg_Orders  Avg_Spend  Total_Sales  Total_Profit  Sales_share_%
+Segment_RFM                                                                                                    
+Champions                 88              23.1        52.8  1554327.9  136780858.4     4937790.3           53.2
+Loyal regulars           204              46.2        11.8   328724.9   67059876.0     2257155.3           26.1
+Occasional buyers        269             227.9         6.2   188740.8   50771264.0     1457995.8           19.8
+At-risk / lapsed         118             413.6         2.5    20726.3    2445699.4       84374.3            1.0
+
+Saved 10 static charts in /home/claude/labs/lab09_analytics/p2_sales/charts
+Saved interactive dashboard -> sales_dashboard.html
